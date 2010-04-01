@@ -1,9 +1,16 @@
-#!perl -T
+use strict;
+use warnings;
+use Test::More;
 
-use Test::More tests => 1;
+my @modules = qw(
+    Papery
+    Papery::Analyzer
+    Papery::Analyzer::Simple
+);
 
-BEGIN {
-	use_ok( 'Papery' );
-}
+plan tests => scalar @modules;
 
-diag( "Testing Papery $Papery::VERSION, Perl $], $^X" );
+diag("Testing Papery, Perl $], $^X");
+
+use_ok($_) for @modules;
+
