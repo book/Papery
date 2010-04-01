@@ -3,18 +3,16 @@ package Papery;
 use warnings;
 use strict;
 
+our $VERSION = '0.01';
+
+
+'Vélin';
+
+__END__
+
 =head1 NAME
 
 Papery - The great new Papery!
-
-=head1 VERSION
-
-Version 0.01
-
-=cut
-
-our $VERSION = '0.01';
-
 
 =head1 SYNOPSIS
 
@@ -27,26 +25,8 @@ Perhaps a little code snippet.
     my $foo = Papery->new();
     ...
 
-=head1 EXPORT
+=head1 DESCRIPTION
 
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
-
-=head1 FUNCTIONS
-
-=head2 function1
-
-=cut
-
-sub function1 {
-}
-
-=head2 function2
-
-=cut
-
-sub function2 {
-}
 
 =head1 AUTHOR
 
@@ -94,14 +74,15 @@ L<http://search.cpan.org/dist/Papery>
 =head1 ACKNOWLEDGEMENTS
 
 
-=head1 COPYRIGHT & LICENSE
+=head1 COPYRIGHT
+
 
 Copyright 2010 Philippe Bruhat (BooK), all rights reserved.
+
+=head1 LICENSE
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
 
-
 =cut
 
-1; # End of Papery
