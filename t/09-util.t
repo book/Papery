@@ -62,6 +62,11 @@ my @tests = (
         { 'zlonk+' => { 'vronk-' => ['awk'] } },
         { zlonk => { vronk => [ 'awk', 'bam', 'kapow' ] } }
     ],
+    [   'ignore internal keys',
+        { __private => 'zlonk' },
+        { __private => 'bam' },
+        { __private => 'zlonk' },
+    ],
 );
 
 plan tests => 3 * @tests;

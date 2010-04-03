@@ -10,6 +10,10 @@ our @EXPORT_OK = qw( merge_meta );
 sub merge_meta {
     my ( $meta, $extra ) = @_;
 
+    # __ keys are ignored
+    my @__keys = grep {/^__/} keys %$extra;
+    my @__values = delete @{$extra}{@__keys};
+
     # keys postfixed with + or - are updates
     my @keys = grep {/[-+]$/} keys %$extra;
     my @values = delete @{$extra}{@keys};
