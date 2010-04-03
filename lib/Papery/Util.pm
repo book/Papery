@@ -31,7 +31,10 @@ sub merge_meta {
         }
         else {                                      # assume string
             if ( $where eq '+' ) { $meta->{$key} .= $value; }
-            else                 { $meta->{$key} = $value . $meta->{$key}; }
+            else {
+                $meta->{$key}
+                    = $value . ( defined $meta->{$key} ? $meta->{$key} : '' );
+            }
         }
     }
 
