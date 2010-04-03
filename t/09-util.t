@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 use Test::More;
+use Storable qw( dclone );
 
 use Papery::Util qw( merge_meta );
 
@@ -69,14 +70,14 @@ my @tests = (
     ],
 );
 
-plan tests => 3 * @tests;
+plan tests => 2 * @tests;
 
 for my $t (@tests) {
     my ( $desc, $meta, $extra, $expected ) = @$t;
-    my @refs = ( "$meta", "$extra" );
+    my $extra_clone = dclone($extra);
     is_deeply( merge_meta( $meta, $extra ), $expected,
         "Merged meta ($desc)" );
-    is( $refs[0], "$meta",  "... in the same hash reference" );
-    is( $refs[1], "$extra", "... without modifying the extra hash" );
+    is_deeply( $extra, $extra_clone,
+        '... without modifying the $extra hash' );
 }
 

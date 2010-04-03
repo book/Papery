@@ -21,6 +21,10 @@ sub merge_meta {
     # others are replacement
     @{$meta}{ keys %$extra } = values %$extra;
 
+    # restore $extra
+    @{$extra}{@__keys} = @__values;
+    @{$extra}{@keys}   = @values;
+
     # process the updates
     while ( my $key = shift @keys ) {
         my $where = chop $key;
