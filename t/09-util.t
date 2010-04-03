@@ -14,7 +14,7 @@ my @tests = (
         { zlonk    => 'bam kapow' }
     ],
     [   'append string to naught',
-        { },
+        {},
         { 'zlonk+' => 'kapow' },
         { zlonk    => 'kapow' }
     ],
@@ -23,7 +23,22 @@ my @tests = (
         { 'zlonk-' => 'kapow ' },
         { zlonk    => 'kapow bam' }
     ],
-    [   '',
+    [   'prepend string to naught',
+        {},
+        { 'zlonk-' => 'kapow' },
+        { zlonk    => 'kapow' }
+    ],
+    [   'update array at the end',
+        { zlonk    => [ 'bam', 'kapow' ] },
+        { 'zlonk+' => ['awk'] },
+        { zlonk => [ 'bam', 'kapow', 'awk' ] }
+    ],
+    [   'update array at the beginning',
+        { zlonk    => [ 'bam', 'kapow' ] },
+        { 'zlonk-' => ['awk'] },
+        { zlonk => [ 'awk', 'bam', 'kapow' ] }
+    ],
+    [   'update hash, deep string',
         {   zlonk => { bam => 'kapow', awk => 'zzzzzwap' },
             aie   => 'clunk_eth'
         },
@@ -32,6 +47,21 @@ my @tests = (
             aie   => 'clunk_eth'
         },
     ],
+    [   'update hashe',
+        { zlonk    => { vronk => [ 'bam', 'kapow' ] } },
+        { 'zlonk+' => { vronk => ['awk'] } },
+        { zlonk    => { vronk => ['awk'] } }
+    ],
+    [   'deep array update, at the end',
+        { zlonk    => { vronk    => [ 'bam', 'kapow' ] } },
+        { 'zlonk+' => { 'vronk+' => ['awk'] } },
+        { zlonk => { vronk => [ 'bam', 'kapow', 'awk' ] } }
+    ],
+    [   'deep array update, at the beginning',
+        { zlonk    => { vronk    => [ 'bam', 'kapow' ] } },
+        { 'zlonk+' => { 'vronk-' => ['awk'] } },
+        { zlonk => { vronk => [ 'awk', 'bam', 'kapow' ] } }
+    ],
 );
 
 plan tests => 3 * @tests;
@@ -39,9 +69,9 @@ plan tests => 3 * @tests;
 for my $t (@tests) {
     my ( $desc, $meta, $extra, $expected ) = @$t;
     my @refs = ( "$meta", "$extra" );
-    is_deeply( merge_meta( $meta, $extra ),
-        $expected, "Merged meta ($desc)" );
-    is( $refs[0], "$meta", "... in the same hash reference" );
+    is_deeply( merge_meta( $meta, $extra ), $expected,
+        "Merged meta ($desc)" );
+    is( $refs[0], "$meta",  "... in the same hash reference" );
     is( $refs[1], "$extra", "... without modifying the extra hash" );
 }
 
