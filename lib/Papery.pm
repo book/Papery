@@ -2,9 +2,44 @@ package Papery;
 
 use warnings;
 use strict;
+use Carp;
 
 our $VERSION = '0.01';
 
+use Papery::Util qw( merge_meta );
+
+use File::Spec;
+use YAML::Tiny qw( LoadFile );
+use Storable qw( dclone );
+
+my %defaults = (
+    _analyzer => 'Simple',
+);
+
+sub new {
+    my ( $class, $source, $destination, %args ) = @_;
+
+    # checks
+    croak "Source directory '$source' doesn't exist"
+        if !-e $source;
+    croak "Source '$source' is not a directory"
+        if !-d $source;
+
+    # read the configuration file
+    my $config = LoadFile( File::Spec->catfile( $source, '_config.yml' ) );
+
+    # create object
+    return bless {
+        __source      => $source,
+        __destination => $destination,
+        __stash       => {},
+        __meta        => {
+            %defaults, %$config, %args,
+            __source      => $source,
+            __destination => $destination,
+        },
+    }, $class;
+}
 
 'Vélin';
 
