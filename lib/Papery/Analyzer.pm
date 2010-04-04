@@ -9,12 +9,13 @@ sub new {
 }
 
 sub analyze_file {
-    my ( $self, $file, $options ) = @_;
+    my ( $self, $pulp, $file ) = @_;
     open my $fh, $file or die "Can't open $file: $!";
     local $/;
     my $text = <$fh>;
     close $fh;
-    return $self->analyze( $text, $options );
+    $pulp->{meta}{__file} = $file;
+    return $self->analyze( $pulp, $text );
 }
 
 1;
