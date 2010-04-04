@@ -3,6 +3,11 @@ package Papery::Analyzer;
 use strict;
 use warnings;
 
+sub new {
+    my ( $class, @args ) = @_;
+    return bless {@args}, $class;
+}
+
 sub analyze_file {
     my ( $self, $file, $options ) = @_;
     open my $fh, $file or die "Can't open $file: $!";
