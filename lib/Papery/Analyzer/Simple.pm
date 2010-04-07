@@ -11,9 +11,8 @@ use YAML::Tiny qw( Load );
 sub analyze {
     my ( $class, $pulp, $text ) = @_;
     my $meta;
-    my @text = $text;
     if ( $text =~ /\A---\n/ ) {
-        ( undef, $meta, @text ) = split /^---\n/m, $text, 3;
+        ( undef, $meta, $text ) = split /^---\n/m, $text, 3;
         $pulp->merge_meta( Load($meta) );
     }
     $pulp->{meta}{_text} = $text;
