@@ -19,39 +19,41 @@ sub merge_meta { Papery::Util::merge_meta( $_[0]->{meta}, $_[1] ); }
 
 # utility method
 sub _class_args {
-    my ( $self, $which ) = @_;
+    my ( $self, $step_handler) = @_;
 
     # compute the base class name
-    my $base = $which;
+    my $base = $step_handler;
     $base =~ s/^_//;
     $base = 'Papery::' . ucfirst $base;
 
     # get the values from the meta
-    $which = $self->{meta}{$which};
+    my $which = $self->{meta}{$step_handler};
     my ( $class, @args ) = ref $which eq 'ARRAY' ? @{$which} : $which;
-
-    return "$base\::$class", @args;
+    return $class ? "$base\::$class" : $base, @args;
 }
 
 sub analyze_file {
     my ( $self,  $file )    = @_;
     my ( $class, @options ) = $self->_class_args('_analyzer');
-    eval "require $class";
-    return $class->new(@options)->analyze_file( $self, $file );
+    return $self if !$class;
+    eval "require $class" or die $@;
+    return $class->analyze_file( $self, $file, @options );
 }
 
 sub process {
     my ($self) = @_;
-    my ( $class, @options ) = @{ $self->{meta}{_processor} };
-    eval "require $class";
-    return $class->new(@options)->process($self);
+    my ( $class, @options ) = $self->_class_args('_processor');
+    return $self if !$class;
+    eval "require $class" or die $@;
+    return $class->process($self, @options);
 }
 
 sub render {
     my ($self) = @_;
-    my ( $class, @options ) = @{ $self->{meta}{_renderer} };
-    eval "require $class";
-    return $class->new(@options)->render($self);
+    my ( $class, @options ) = $self->_class_args('_renderer');
+    return $self if !$class;
+    eval "require $class" or die $@;
+    return $class->render($self, @options);
 }
 
 1;
