@@ -12,7 +12,7 @@ sub analyze_file {
     close $fh;
 
     $pulp->{meta}{__file} = $file;
-    return $self->analyze( $pulp, $text );
+    return $class->analyze( $pulp, $text );
 }
 
 1;
