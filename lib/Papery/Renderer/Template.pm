@@ -19,7 +19,7 @@ sub render {
 
     local $Template::Stash::PRIVATE;    # we want to see "private" vars
     $template->process( $pulp->{meta}{_layout},
-        $pulp->{meta}, \( $pulp->{meta}{__output} = '' ) )
+        $pulp->{meta}, \( $pulp->{meta}{_output} = '' ) )
         or die $template->error;
 
     return $pulp;
