@@ -17,6 +17,11 @@ sub analyze_file {
     my $text = <$fh>;
     close $fh;
 
+    # compute file extension
+    my $ext = ( split /\./, $path )[-1];
+    $meta->{_processor} = $meta->{_processors}{$ext}
+        if exists $meta->{_processors}{$ext};
+
     # update meta
     $meta->{__source_path}    = $path;
     $meta->{__source_abspath} = $abspath;
