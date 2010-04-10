@@ -7,6 +7,7 @@ use Carp;
 our $VERSION = '0.01';
 
 use Papery::Util qw( merge_meta );
+use Papery::Pulp;
 
 use File::Spec;
 use YAML::Tiny qw( LoadFile );
@@ -39,6 +40,75 @@ sub new {
             __destination => $destination,
         },
     }, $class;
+}
+
+sub generate {
+    my ($self) = @_;
+    $self->process_dir( dclone( $self->{__meta} ), '' );
+}
+
+# $dir is relative to __source
+sub process_tree {
+    my ( $self, $meta, $dir ) = @_;
+    my $absdir = File::Spec->catdir( $self->{__source}, $dir );
+    $dir ||= File::Spec->curdir;
+
+    # local metafile for directory
+    if ( -e ( my $metafile = File::Spec->catfile( $absdir, '_meta.yml' ) ) ) {
+        merge_meta( $meta, LoadFile($metafile) );
+    }
+
+    # special directories
+    merge_meta(
+        $meta,
+        {   map      {@$_}             # back to key/value pairs
+                grep { -d $_->[1][0] }    # skip non-existing dirs
+                map {
+                chop( my $name = $_ );
+                [ $_ => [ File::Spec->catdir( $absdir, $name ) ] ]
+                } qw( _templates- _lib- _hooks+ )
+        }
+    );
+
+    # process directory
+    opendir my $dh, $absdir or die "Can't open $absdir for reading: $!";
+
+FILE:
+    for my $file ( File::Spec->no_upwards( readdir($dh) ) ) {
+
+
+        # always ignore _ files (reserved for Papery)
+        next if $file =~ /^_/;
+
+        # relative and absolute path for the file
+        my $path    = File::Spec->catfile( $dir,    $file );
+        my $abspath = File::Spec->catfile( $absdir, $file );
+
+        # check against ignore list
+        for my $check ( @{ $meta->{_ignore} } ) {
+            if ( $file =~ /$check/ ) {
+                next FILE;
+            }
+        }
+
+        # recurse into directory
+        if ( -d $abspath ) {
+            $self->process_tree( $meta, $path );
+        }
+        else {
+            $self->process_file( $meta, $path );
+        }
+    }
+}
+
+sub process_file {
+    my ( $self, $meta, $file ) = @_;
+    return
+        map    { $_->save() }                 # will create final files
+        map    { $_->render() }               # may insert Papery::Pulp
+        map    { $_->process() }              # may insert Papery::Pulp
+        map    { $_->analyze_file($file) }    # may insert Papery::Pulp
+        Papery::Pulp->new($meta);             # clone $meta
 }
 
 'Vélin';
