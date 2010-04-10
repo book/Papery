@@ -10,11 +10,14 @@ use YAML::Tiny qw( Load );
 
 sub analyze {
     my ( $class, $pulp, $text ) = @_;
-    my $meta;
+
+    # take the metadata out
     if ( $text =~ /\A---\n/ ) {
-        ( undef, $meta, $text ) = split /^---\n/m, $text, 3;
+        ( undef, my $meta, $text ) = split /^---\n/m, $text, 3;
         $pulp->merge_meta( Load($meta) );
     }
+
+    # update the text
     $pulp->{meta}{_text} = $text;
     return $pulp;
 }
