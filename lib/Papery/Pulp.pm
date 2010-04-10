@@ -5,6 +5,8 @@ use warnings;
 
 use Papery::Util;    # do not import merge_meta()
 use Storable qw( dclone );
+use File::Spec;
+use File::Path;
 
 sub new {
     my ( $class, $meta ) = @_;
@@ -54,6 +56,30 @@ sub render {
     return $self if !$class;
     eval "require $class" or die $@;
     return $class->render($self, @options);
+}
+
+sub save {
+    my ($self) = @_;
+    my $meta = $self->{meta};
+
+    # _permalink is relative to __destination
+    $meta->{_permalink} = $meta->{__source_path}
+        if !exists $meta->{_permalink};
+
+    my $abspath
+        = File::Spec->catfile( $meta->{__destination}, $meta->{_permalink} );
+    my ( $volume, $directories, $file ) = File::Spec->splitpath($abspath);
+
+    # portably compute the directory path
+    my $dir = File::Spec->catpath( $volume, $directories, '' );
+    mkpath($dir) if !-e $dir;
+
+    # now create the file and dump the output
+    open my $fh, '>', $abspath or die "Can't create $abspath: $!";
+    print {$fh} $meta->{_output};
+    close $fh;
+
+    return $self;
 }
 
 1;
