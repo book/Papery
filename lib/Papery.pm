@@ -27,7 +27,7 @@ sub new {
         if !-d $source;
 
     # read the configuration file
-    my $config = LoadFile( File::Spec->catfile( $source, '_config.yml' ) );
+    my ($config) = LoadFile( File::Spec->catfile( $source, '_config.yml' ) );
 
     # create object
     return bless {
