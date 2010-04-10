@@ -7,9 +7,10 @@ use File::Spec;
 
 sub analyze_file {
     my ( $class, $pulp, $path, @options ) = @_;
+    my $meta = $pulp->{meta};
 
     # $file is relative to __source
-    my $abspath = File::Spec->catfile( $pulp->{meta}{__source}, $path );
+    my $abspath = File::Spec->catfile( $meta->{__source}, $path );
 
     open my $fh, $abspath or die "Can't open $path: $!";
     local $/;
@@ -17,8 +18,8 @@ sub analyze_file {
     close $fh;
 
     # update meta
-    $pulp->{meta}{__source_path}    = $path;
-    $pulp->{meta}{__source_abspath} = $abspath;
+    $meta->{__source_path}    = $path;
+    $meta->{__source_abspath} = $abspath;
     return $class->analyze( $pulp, $text );
 }
 
