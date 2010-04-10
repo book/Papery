@@ -3,10 +3,10 @@ package Papery::Renderer;
 use strict;
 use warnings;
 
-sub new {
-    my ( $class, @args ) = @_;
-    return bless {@args}, $class;
+sub render {
+    my ($class, $pulp, @options) = @_;
+    $pulp->{meta}{_output} = $pulp->{meta}{_content};
+    return $pulp;
 }
 
 1;
-
