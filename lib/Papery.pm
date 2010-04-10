@@ -44,7 +44,7 @@ sub new {
 
 sub generate {
     my ($self) = @_;
-    $self->process_dir( dclone( $self->{__meta} ), '' );
+    $self->process_tree( dclone( $self->{__meta} ), '' );
 }
 
 # $dir is relative to __source
