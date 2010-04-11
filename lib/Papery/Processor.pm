@@ -56,7 +56,7 @@ This class provides a single method:
 
 =item process( $pulp )
 
-Analyze the C<_text> metadata, and update the C<$pulp> metadata and
+Process the C<_text> metadata, and update the C<$pulp> metadata and
 C<_content>.
 
 =back
