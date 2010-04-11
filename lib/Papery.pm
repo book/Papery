@@ -117,25 +117,164 @@ __END__
 
 =head1 NAME
 
-Papery - The great new Papery!
+Papery - The thin layer between what you write and what you publish
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
+Below is a significant excerpt of the B<papery> command-line tool:
 
     use Papery;
 
-    my $foo = Papery->new();
-    ...
+    # generate the site
+    Papery->new( @ARGV )->generate();
 
 =head1 DESCRIPTION
+
+C<Papery> is meant to be a very thin layer between a number of Perl modules
+that you can use to generate the files of a static web site.
+
+It is intended to make it very flexible, so that it's easy to add hooks
+and specialized modules to generate any file that is needed for the site.
+
+=head2 Workflow
+
+C<Papery> processes entire directory trees containing files and templates,
+and for each file that is not ignored, it will run the follwing steps:
+
+=over 4
+
+=item analysis
+
+splits the file between "metadata" and "text", and creates one or more
+objects encapsulating those (everything is basically a hash, and the
+text is just some special metadata)
+
+=item processing
+
+turns the "text" into "content" by parsing it with a given processor.
+For example C<Papery::Processor::Pod::POM> uses C<Pod::POM> to turn
+POD text into HTML.
+
+=item rendering
+
+turns the "content" into "output", by processing it through a templating
+engine. For example, C<Papery::Renderer::Template> will use Template Toolkit
+to process the main template and produce the target file.
+
+=back
+
+Each step takes a C<Papery::Pulp> object, which is basically a hash
+of metadata. Each step can return more than one C<Papery::Pulp> object.
+After the rendering step, each C<Papery::Pulp> object is saved to a file.
+
+=head2 Metadata
+
+Initial meta information comes from the global configuration (top-level
+F<_config.yml> file). It is then updated from the F<_meta.yml> file in
+the current directory.
+
+Furthermore, each file can contain metadata for itself, using "YAML Front
+Matter":
+
+    ---
+    # this is actually YAML
+    title: Page title
+    ---
+    This is the actual content
+
+The metadata comes in three kinds:
+
+=over 4
+
+=item *
+
+variables prefixed with a double underscore (C<__>) are internal to Papery
+and set by Papery. They cannot be overwritten by any of F<_config.yml>,
+F<_meta.yml> or the YAML front matter
+
+=item *
+
+variables prefixed with a single underscore (C<_>) are reserved for
+Papery, and can be overridden by any of F<_config.yml>, F<_meta.yml>
+or the YAML front matter
+
+=item *
+
+all the other variables are free to use by the web site itself.
+
+=back
+
+=head2 Papery internal / reserved variables
+
+The metadata variables recognized by Papery are:
+
+=over 4
+
+=item __source
+
+The top-level source directory for the site
+
+=item __destination
+
+The top-level destination directory for the site
+
+=item _analyer
+
+The C<Papery::Analyzer> subclass that will be used to I<analyze> the
+source file.
+
+=item _processors
+
+A hash of extentions to C<Papery::Processor> classes
+
+=item _processor
+
+The C<Papery::Processor> subclass that will be used to process I<text>
+and generate the I<content>.
+
+=item _renderer
+
+The C<Papery::Renderer> subclass that will be used to render the I<content>
+and create the I<output>
+
+=item _text
+
+The I<text> resulting from the analysis step.
+
+=item _content
+
+The I<content> resulting from the processing step.
+
+=item _output
+
+The I<output> resulting from the rendering step.
+
+=item _permalink
+
+The final destination for the I<output>. The filename is relative to
+C<__destination>.
+
+=back
+
+Some of the analyzers, processors and renderers may also define their own
+variables.
 
 
 =head1 AUTHOR
 
 Philippe Bruhat (BooK), C<< <book at cpan.org> >>
+
+=head1 ACKNOWLEDGEMENTS
+
+Much of the inspiration for this module comes from Jekyll
+(L<http://jekyllrb.com/>) and Template Toolkit's C<ttree>
+(http://www.template-toolkit.org/>).
+
+While my initial goal was to be able to write a web site in POD,
+I realized that any format can be turned into HTML and no limitation
+on the source format should be imposed on the people. Same goes
+for the templating engine. My plan is to make this flexible enough
+(using hooks) that one can extend it easily to build any kind of website.
 
 =head1 BUGS
 
