@@ -19,7 +19,6 @@ my $src = cwd;
 # minimum metadata
 my %basic = (
     _processors  => {},
-    _analyzer    => 'Simple',
     _processor   => 'Pod::POM',
     pod_pom_view => 'Pod::POM::View::Pod'
 );
