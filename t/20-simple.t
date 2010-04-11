@@ -17,7 +17,7 @@ my @files = (
 );
 
 # generate full filenames
-my $dir = File::Spec->catdir( 't', 'site1' );
+my $dir = File::Spec->catdir( 't', 'analyzer' );
 my $src = cwd;
 @files = map { $_->[0] = File::Spec->catfile( $dir, $_->[0] ); $_ } @files;
 
