@@ -6,19 +6,22 @@ use Cwd;
 use Papery::Pulp;
 use Papery::Analyzer::Simple;
 
-# test data
-my @files = (
-    [   'zlonk.txt',
-        { _processors => {}, theme => 'batman', count => 3 },
-        "zlott powie thwacke"
-    ],
-    [ 'bam.txt', { _processors => {} }, "thwapp eee_yow ker_sploosh", ],
-    [ 'kapow.txt', { _processors => {}, theme => 'barbapapa', count => 0 } ],
-);
-
 # generate full filenames
 my $dir = File::Spec->catdir( 't', 'analyzer' );
 my $src = cwd;
+
+# minimum metadata
+my %basic = ( _processors => {}, _analyzer => 'Simple' );
+
+# test data
+my @files = (
+    [   'zlonk.txt',
+        { %basic, theme => 'batman', count => 3 },
+        "zlott powie thwacke"
+    ],
+    [ 'bam.txt', {%basic}, "thwapp eee_yow ker_sploosh", ],
+    [ 'kapow.txt', { %basic, theme => 'barbapapa', count => 0 } ],
+);
 @files = map { $_->[0] = File::Spec->catfile( $dir, $_->[0] ); $_ } @files;
 
 plan tests => 2 * @files + 2;
@@ -31,8 +34,8 @@ like( $@, qr/^Can't open notthere: /, 'Expected error message' );
 # test success
 for my $test (@files) {
     my ( $File, $Meta, $Text ) = @$test;
-    my $pulp = Papery::Pulp->new( { __source => $src } );
-    Papery::Analyzer::Simple->analyze_file( $pulp, $File );
+    my $pulp = Papery::Pulp->new( { %basic, __source => $src } );
+    $pulp->analyze_file($File);
 
     # remove internal Papery variables
     delete $pulp->{meta}{$_} for grep {/^__/} keys %{ $pulp->{meta} };
