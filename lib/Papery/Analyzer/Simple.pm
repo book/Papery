@@ -9,7 +9,8 @@ our @ISA = qw( Papery::Analyzer );
 use YAML::Tiny qw( Load );
 
 sub analyze {
-    my ( $class, $pulp, $text ) = @_;
+    my ( $class, $pulp ) = @_;
+    my $text = $pulp->{meta}{_text};
 
     # take the metadata out
     if ( $text =~ /\A---\n/ ) {

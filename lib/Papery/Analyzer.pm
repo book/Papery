@@ -25,7 +25,8 @@ sub analyze_file {
     # update meta
     $meta->{__source_path}    = $path;
     $meta->{__source_abspath} = $abspath;
-    return $class->analyze( $pulp, $text );
+    $meta->{_text}            = $text;
+    return $class->analyze($pulp);
 }
 
 1;
