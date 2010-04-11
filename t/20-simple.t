@@ -4,7 +4,6 @@ use Test::More;
 use File::Spec;
 use Cwd;
 use Papery::Pulp;
-use Papery::Analyzer::Simple;
 
 # generate full filenames
 my $dir = File::Spec->catdir( 't', 'analyzer' );
@@ -26,11 +25,6 @@ my @files = (
 
 plan tests => 2 * @files + 2;
 
-# test failure
-ok( !eval { Papery::Analyzer::Simple->analyze_file( {}, 'notthere' ); 1 },
-    'Fail with non-existent file' );
-like( $@, qr/^Can't open notthere: /, 'Expected error message' );
-
 # test success
 for my $test (@files) {
     my ( $File, $Meta, $Text ) = @$test;
@@ -45,4 +39,10 @@ for my $test (@files) {
     is_deeply( delete $pulp->{meta}{_text}, $Text, "text $File" );
     is_deeply( $pulp->{meta},               $Meta, "meta $File" );
 }
+
+# test failure
+my $pulp = Papery::Pulp->new( { %basic, __source => $src } );
+ok( !eval { $pulp->analyze_file( 'notthere' ); 1 },
+    'Fail with non-existent file' );
+like( $@, qr/^Can't open notthere: /, 'Expected error message' );
 
