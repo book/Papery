@@ -30,6 +30,7 @@ sub process {
     # merge the metadata and content
     $pulp->merge_meta( $pom->metadata );
     $pulp->{meta}{_content} = $content;
+    $pulp->{meta}{_pod_pom} = $pom;
 
     return $pulp;
 }
