@@ -282,7 +282,52 @@ Please report any bugs or feature requests to C<bug-papery at rt.cpan.org>, or t
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Papery>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
 
+=head1 TODO
 
+Here's a list of some of the things ahead:
+
+=over 4
+
+=item *
+
+post_(analyze|process|render) hooks
+
+=item *
+
+post_site hooks (for all those files we need to generate after the whole
+site has been generated)
+
+=item *
+
+file copy
+
+=item *
+
+not rebuilding files that don't need to be rebuilt
+
+=item *
+
+dependencies
+
+=item *
+
+support for local F<_lib> and F<_hooks> directories
+
+=item *
+
+more analyzers (e.g. C<Papery::Analyzer::Multiple>)
+=item *
+
+more processors (e.g. C<Text::Markdown>)
+
+=item *
+
+more renderers (e.g. C<Text::Template>
+
+=item *
+
+
+=back
 
 
 =head1 SUPPORT
