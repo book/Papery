@@ -19,6 +19,7 @@ sub merge_meta {
     my @values = delete @{$extra}{@keys};
 
     # others are replacement
+    # FIXME: deep keys with postfix
     @{$meta}{ keys %$extra } = values %$extra;
 
     # restore $extra
@@ -50,4 +51,62 @@ sub merge_meta {
 }
 
 1;
+
+__END__
+
+=head1 NAME
+
+Papery::Util - Various utilities functions for Papery
+
+=head1 SYNOSPSIS
+
+    use Papery::Util;
+
+    # no exports by default
+
+=head1 DESCRIPTION
+
+C<Papery::Util> exists to provide a number of utility functions to other
+classes in Papery.
+
+=head1 FUNCTIONS
+
+C<Papery::Util> provides the following functions:
+
+=over 4
+
+=item merge_meta( $meta, $extra )
+
+Merge the keys and values from C<$extra> into C<$meta>, and return C<$meta>.
+
+The merging scheme is relatively flexible: the keys in the C<$extra> hash
+can have a suffix (either C<+> or C<->, which of course means that no
+key in the Papery metadata can end with those characters).
+
+A key without suffix is simply a replacement.
+
+If the value is a string, and the suffix is C<+>, the string is appended
+to the original. If the suffix is C<->, the string is prepended to the
+original.
+
+If the value is an array, and the suffix is C<+>, the array content is
+pushed to the end of the original. If the suffix is C<->, the array content
+is inserted at the beginning of the original.
+
+=back
+
+=head1 AUTHOR
+
+Philippe Bruhat (BooK), C<< <book at cpan.org> >>
+
+=head1 COPYRIGHT
+
+Copyright 2010 Philippe Bruhat (BooK), all rights reserved.
+
+=head1 LICENSE
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
+=cut
 
