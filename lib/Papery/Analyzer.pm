@@ -7,7 +7,7 @@ use File::Spec;
 use YAML::Tiny qw( Load );
 
 sub analyze_file {
-    my ( $class, $pulp, $path, @options ) = @_;
+    my ( $class, $pulp, $path ) = @_;
     my $meta = $pulp->{meta};
 
     # $file is relative to __source
@@ -15,7 +15,7 @@ sub analyze_file {
 
     open my $fh, $abspath or die "Can't open $path: $!";
     local $/;
-    my $text = <$fh>;
+    my $source = <$fh>;
     close $fh;
 
     # compute file extension
@@ -26,21 +26,21 @@ sub analyze_file {
     # update meta
     $meta->{__source_path}    = $path;
     $meta->{__source_abspath} = $abspath;
-    $meta->{_text}            = $text;
+    $meta->{_source}          = $source;
     return $class->analyze($pulp);
 }
 
 sub analyze {
     my ( $class, $pulp ) = @_;
-    my $text = $pulp->{meta}{_text};
+    my $text = $pulp->{meta}{_source};
 
     # take the metadata out
     if ( $text =~ /\A---\n/ ) {
         ( undef, my $meta, $text ) = split /^---\n/m, $text, 3;
         $pulp->merge_meta( Load($meta) );
-        $pulp->{meta}{_text} = $text;
     }
 
+    $pulp->{meta}{_text} = $text;
     return $pulp;
 }
 

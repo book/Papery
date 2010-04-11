@@ -10,7 +10,7 @@ my $dir = File::Spec->catdir( 't', 'analyzer' );
 my $src = cwd;
 
 # minimum metadata
-my %basic = ( _processors => {}, _analyzer => 'Simple' );
+my %basic = ( _processors => {} );
 
 # test data
 my @files = (
@@ -23,7 +23,7 @@ my @files = (
 );
 @files = map { $_->[0] = File::Spec->catfile( $dir, $_->[0] ); $_ } @files;
 
-plan tests => 2 * @files + 2;
+plan tests => 3 * @files + 2;
 
 # test success
 for my $test (@files) {
@@ -33,6 +33,7 @@ for my $test (@files) {
 
     # remove internal Papery variables
     delete $pulp->{meta}{$_} for grep {/^__/} keys %{ $pulp->{meta} };
+    ok( delete $pulp->{meta}{_source}, "_source $File" );
 
     # testing one-liners to avoid \n issues
     chomp $pulp->{meta}{_text} if $pulp->{meta}{_text};
