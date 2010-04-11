@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use File::Spec;
+use YAML::Tiny qw( Load );
 
 sub analyze_file {
     my ( $class, $pulp, $path, @options ) = @_;
@@ -27,6 +28,20 @@ sub analyze_file {
     $meta->{__source_abspath} = $abspath;
     $meta->{_text}            = $text;
     return $class->analyze($pulp);
+}
+
+sub analyze {
+    my ( $class, $pulp ) = @_;
+    my $text = $pulp->{meta}{_text};
+
+    # take the metadata out
+    if ( $text =~ /\A---\n/ ) {
+        ( undef, my $meta, $text ) = split /^---\n/m, $text, 3;
+        $pulp->merge_meta( Load($meta) );
+        $pulp->{meta}{_text} = $text;
+    }
+
+    return $pulp;
 }
 
 1;
