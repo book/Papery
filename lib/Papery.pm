@@ -14,7 +14,6 @@ use YAML::Tiny qw( LoadFile );
 use Storable qw( dclone );
 
 my %defaults = (
-    _analyzer => 'Simple',
 );
 
 sub new {
