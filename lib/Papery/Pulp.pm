@@ -143,6 +143,10 @@ and update it accordingly.
 Render the object using the configured renderer class
 and update it accordingly.
 
+=item save()
+
+Save the generated output to the C<_permalink> file.
+
 =item merge_meta( $meta )
 
 Merge the C<$meta> metadata into the object, using
