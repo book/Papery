@@ -11,7 +11,12 @@ my $builder = Module::Build->new(
         'Test::More' => 0,
     },
     add_to_cleanup      => [ 'Papery-*' ],
-    create_makefile_pl => 'traditional',
+    meta_merge => {
+        resources => {
+            repository => 'http://github.com/book/Papery',
+        },
+    },
+
 );
 
 $builder->create_build_script();
