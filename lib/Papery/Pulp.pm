@@ -84,3 +84,85 @@ sub save {
 
 1;
 
+__END__
+
+=head1 NAME
+
+Papery::Pulp - The pulp of the Papery workflow
+
+=head1 SYNOPSIS
+
+    # the Papery workflow
+
+    sub process_file {
+        my ( $self, $meta, $file ) = @_;
+        return
+            map    { $_->save() }                 # will create final files
+            map    { $_->render() }               # may insert Papery::Pulp
+            map    { $_->process() }              # may insert Papery::Pulp
+            map    { $_->analyze_file($file) }    # may insert Papery::Pulp
+            Papery::Pulp->new($meta);             # clone $meta
+    }
+
+=head1 DESCRIPTION
+
+The Papery workflow is basically passing around C<Papery::Pulp> objects.
+The intermediate steps can insert C<Papery::Pulp> objects in the flow,
+and each of them will be saved in a file at the end.
+
+A C<Papery::Pulp> object carries around the metadata about the thing
+(usually a file) being processed.  It is a simple hash of metadata, that
+is process through the whole Papery process. It is initialized with the
+current metadata (global configuration, plus all layers of directory
+metadata). It is passed to C<Papery::Analyzer>, C<Papery::Processor>
+and C<Papery::Renderer> objects.
+
+=head1 METHODS
+
+C<Papery::Pulp> provides the following methods:
+
+=over 4
+
+=item new( $meta )
+
+Create a new C<Papery::Pulp> object, initialized with the metadata
+in C<$meta>.
+
+=item analyze_file( $file )
+
+Analyze the C<$file> file (relative to the I<source> directory)
+using the configured analyzer class and update the object accordingly.
+
+=item process()
+
+Process the object using the configured processor class
+and update it accordingly.
+
+=item render()
+
+Render the object using the configured renderer class
+and update it accordingly.
+
+=item merge_meta( $meta )
+
+Merge the C<$meta> metadata into the object, using
+C<Papery::Util::merge_meta()>.
+
+=back
+
+
+=head1 AUTHOR
+
+Philippe Bruhat (BooK), C<< <book at cpan.org> >>
+
+=head1 COPYRIGHT
+
+Copyright 2010 Philippe Bruhat (BooK), all rights reserved.
+
+=head1 LICENSE
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
+=cut
+
