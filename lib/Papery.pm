@@ -258,6 +258,35 @@ C<__destination>.
 Some of the analyzers, processors and renderers may also define their own
 variables.
 
+=head1 METHODS
+
+C<Papery> supports the following methods:
+
+=over 4
+
+=item new( $src, $dst )
+
+Create a new C<Papery> object, with the provided I<source> and I<destination>
+directories.
+
+=item generate()
+
+Process all the files in the I<source> directory and generate the resulting
+files in the I<destination> directory.
+
+=item process_tree( $dir )
+
+Process the C<$dir> tree.
+
+C<$dir> is relative to the I<source> directory.
+
+=item process_file( $file )
+
+Process the C<$file> file, to generate one or more target files.
+
+C<$file> is relative to the I<source> directory.
+
+=back
 
 =head1 AUTHOR
 
